@@ -22,8 +22,8 @@ type Query {
 }
 
 type Mutation {
-  createNote(input: NoteInput): Note
-  updateNote(address: String, input: NoteInput): Note
+  createNote(noteInput: NoteInput): Note
+  updateNote(address: String, noteInput: NoteInput): Note
   removeNote(address: String): Note
 }
 
