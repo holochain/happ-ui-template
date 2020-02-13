@@ -1,9 +1,9 @@
 import React from 'react'
 import { render } from '@testing-library/react'
-import HApp from './HApp'
+import NotesHApp from './NotesHApp'
 
 test('renders learn react link', () => {
-  const { getByText } = render(<HApp />)
-  const divElement = getByText(/Note hApp/i)
+  const { getByText } = render(<NotesHApp />)
+  const divElement = getByText(/Notes hApp/i)
   expect(divElement).toBeInTheDocument()
 })
