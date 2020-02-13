@@ -1,6 +1,6 @@
 import { connect as hcWebClientConnect } from '@holochain/hc-web-client'
 import { get } from 'lodash/fp'
-import mockCallZome from 'mock-dnas/mockCallZome'
+import mockCallZome from './mock-dnas/mockCallZome'
 
 let holochainClient
 
@@ -92,14 +92,5 @@ export function createZomeCall (zomeCallPath, callOpts = {}) {
         error
       )
     }
-  }
-}
-
-
-export function instanceCreateZomeCall (instanceId) {
-  return (partialZomeCallPath, callOpts = {}) => {
-    // regex removes leading slash
-    const zomeCallPath = `${instanceId}/${partialZomeCallPath.replace(/^\/+/, '')}`
-    return createZomeCall(zomeCallPath, callOpts)
   }
 }

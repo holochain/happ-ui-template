@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { ApolloProvider } from '@apollo/react-hooks'
 import apolloClient from './apolloClient'
 import './index.css'
-import NotesHApp from './HApp'
+import NotesHApp from './NotesHApp'
 import * as serviceWorker from './serviceWorker'
 
 function HApp () {

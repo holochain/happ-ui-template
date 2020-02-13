@@ -3,14 +3,14 @@ import gql from "graphql-tag"
 export default gql`
 
 type Note {
-  id: Id  
+  id: ID  
   address: String
   createdAt: String
   subject: String
   content: String
 }
 
-input NoteInput: {
+input NoteInput {
   createdAt: String
   subject: String
   content: String
