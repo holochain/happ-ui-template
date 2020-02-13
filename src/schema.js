@@ -6,13 +6,13 @@ type Note {
   id: ID  
   address: String
   createdAt: String
-  subject: String
+  title: String
   content: String
 }
 
 input NoteInput {
   createdAt: String
-  subject: String
+  title: String
   content: String
 }
 
