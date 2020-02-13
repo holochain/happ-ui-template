@@ -73,7 +73,7 @@ function NoteForm({ note = { title: '', content: ''}, formTitle, formAction, set
   const onSubmit = () => {
     formAction({
       ...formState,
-      createdAt: Date.now()
+      createdAt: Date.now().toString()
     })
     setEditingNoteId(null)
   }
