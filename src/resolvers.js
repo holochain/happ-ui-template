@@ -9,9 +9,6 @@ function dnaToUiNote (noteResult) {
 }
 
 function uiToDnaNote (noteInput) {
-
-  console.log('noteInput', noteInput)
-
   return omitBy(isUndefined, {
     ...noteInput,
     created_at: noteInput.createdAt
@@ -20,21 +17,19 @@ function uiToDnaNote (noteInput) {
 
 export const resolvers = {
   Query: {
-    getNote: async (_, { address }) => 
+    getNote: async (_, { address }) =>
       dnaToUiNote(await createZomeCall('/notes/notes/get_note')({ address })),
-    
+
     listNotes: async () =>
-      (await createZomeCall('/notes/notes/list_notes')()).map(dnaToUiNote),
+      (await createZomeCall('/notes/notes/list_notes')()).map(dnaToUiNote)
   },
 
   Mutation: {
-    createNote: async (_, { noteInput }) => 
-      dnaToUiNote(await createZomeCall('/notes/notes/create_note')({ note_spec: uiToDnaNote(noteInput) })),
-  
-    updateNote: async (_, { address, noteInput }) =>
-      dnaToUiNote(await createZomeCall('/notes/notes/update_note')({ note: {...uiToDnaNote(noteInput), address} })),
+    createNote: async (_, { noteInput }) => dnaToUiNote(await createZomeCall('/notes/notes/create_note')({ note_input: { ...uiToDnaNote(noteInput) } })),
 
-    removeNote: async (_, { address }) => 
+    updateNote: async (_, { address, noteInput }) => dnaToUiNote(await createZomeCall('/notes/notes/update_note')({ address, note_input: { ...uiToDnaNote(noteInput) } })),
+
+    removeNote: async (_, { address }) =>
       dnaToUiNote(await createZomeCall('/notes/notes/remove_note')({ address }))
   }
 }

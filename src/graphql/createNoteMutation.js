@@ -2,10 +2,10 @@ import gql from 'graphql-tag'
 
 export default gql`
   mutation CreateNote($noteInput: NoteInput) {
-    createNote {
+    createNote (noteInput: $noteInput) {
       id
       address
-      createdAt
+      createdAt 
       title
       content
     }
