@@ -4,19 +4,19 @@
 // See mockCallZome.js
 
 const noteEntries = {
-  'QmRccTDUM1UcJWuxW3aMjfYkSBFmhBnGtgB7lAddress01': {
+  QmRccTDUM1UcJWuxW3aMjfYkSBFmhBnGtgB7lAddress01: {
     id: '1',
     created_at: '1581553349996',
     title: 'Note 1',
     content: 'The body of note 1'
   },
-  'QmRccTDUM1UcJWuxW3aMjfYkSBFmhBnGtgB7lAddress02': {
+  QmRccTDUM1UcJWuxW3aMjfYkSBFmhBnGtgB7lAddress02: {
     id: '2',
     created_at: '1581553400796',
     title: 'Note 2',
     content: 'The body of note 2'
   },
-  'QmRccTDUM1UcJWuxW3aMjfYkSBFmhBnGtgB7lAddress03': {
+  QmRccTDUM1UcJWuxW3aMjfYkSBFmhBnGtgB7lAddress03: {
     id: '3',
     created_at: '1581553434263',
     title: 'Note 3',
@@ -27,13 +27,14 @@ const noteEntries = {
 const data = {
   notes: {
     notes: {
-      create_note: ({ note_spec }) => {
-        const id = 1
-        const address = 'QmRccTDUM1UcJWuxW3aMjfYkSBFmhBnGtgB7lAddress00'
+      create_note: ({ note_input: noteInput }) => {
+        const id = Object.keys(noteEntries).length + 1
+        const address = 'QmRccTDUM1UcJWuxW3aMjfYkSBFmhBnGtgB7lAddress0' + id
+        noteEntries[address] = { id, ...noteInput }
         return {
           id,
           address,
-          ...note_spec
+          ...noteInput
         }
       },
 
@@ -46,16 +47,20 @@ const data = {
         }
       },
 
-      update_note: ({ address, note_spec }) => {
-        const noteResult = data.notes.notes.get_note({ address })
-
+      update_note: ({ address, note_input: noteInput }) => {
+        const noteOriginalResult = data.notes.notes.get_note({ address })
+        noteEntries[address] = { ...noteOriginalResult, ...noteInput }
         return {
-          ...noteResult,
-          ...note_spec
+          ...noteOriginalResult,
+          ...noteInput
         }
       },
 
-      remove_note: ({ address }) => data.notes.notes.get_note({ address }),
+      remove_note: ({ address }) => {
+        const removedNote = data.notes.notes.get_note({ address })
+        delete noteEntries[address]
+        return removedNote
+      },
 
       list_notes: () => Object.keys(noteEntries).map(key => ({
         address: key,
