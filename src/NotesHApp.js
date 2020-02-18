@@ -9,7 +9,7 @@ import REMOVE_NOTE_MUTATION from './graphql/removeNoteMutation'
 import './NotesHApp.css'
 
 function NotesHApp () {
-  const { data: { listNotes } = { listNotes: [] } } = useQuery(LIST_NOTES_QUERY, { pollInterval: 500 })
+  const { data: { listNotes } = { listNotes: [] } } = useQuery(LIST_NOTES_QUERY)
   const [createNote] = useMutation(CREATE_NOTE_MUTATION)
   const [updateNote] = useMutation(UPDATE_NOTE_MUTATION)
   const [removeNote] = useMutation(REMOVE_NOTE_MUTATION)
