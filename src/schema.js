@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import gql from 'graphql-tag'
 
 export default gql`
 
@@ -26,5 +26,4 @@ type Mutation {
   updateNote(address: String, noteInput: NoteInput): Note
   removeNote(address: String): Note
 }
-
 `

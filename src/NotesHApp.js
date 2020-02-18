@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { omit } from 'lodash/fp'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import LIST_NOTES_QUERY from './graphql/listNotesQuery'
 import CREATE_NOTE_MUTATION from './graphql/createNoteMutation'
@@ -7,25 +8,25 @@ import REMOVE_NOTE_MUTATION from './graphql/removeNoteMutation'
 
 import './NotesHApp.css'
 
-function NotesHApp() {
+function NotesHApp () {
   const { data: { listNotes } = { listNotes: [] } } = useQuery(LIST_NOTES_QUERY)
   const [createNote] = useMutation(CREATE_NOTE_MUTATION)
   const [updateNote] = useMutation(UPDATE_NOTE_MUTATION)
   const [removeNote] = useMutation(REMOVE_NOTE_MUTATION)
-  
+
   // the id of the note currently being edited
   const [editingNoteId, setEditingNoteId] = useState()
 
   return <div className='notes-happ'>
     <h1>Notes hApp</h1>
 
-    <NoteForm 
-      formAction={noteInput => createNote({ variables: { noteInput }})}
+    <NoteForm
+      formAction={({ noteInput }) => createNote({ variables: { noteInput } })}
       formTitle='Create Note' />
 
     <div className='note-list'>
       {listNotes.map(note =>
-        <NoteRow 
+        <NoteRow
           key={note.id}
           note={note}
           editingNoteId={editingNoteId}
@@ -36,34 +37,33 @@ function NotesHApp() {
   </div>
 }
 
-function NoteRow({ note, editingNoteId, setEditingNoteId, updateNote, removeNote }) {
+function NoteRow ({ note, editingNoteId, setEditingNoteId, updateNote, removeNote }) {
   const { id } = note
-  
+
   if (id === editingNoteId) {
-    return <NoteForm 
-      note={note} 
-      formTitle='Update Note' 
-      setEditingNoteId={setEditingNoteId} 
-      formAction={noteInput => updateNote({ variables: { noteInput } })} />
+    return <NoteForm
+      note={note}
+      formTitle='Update Note'
+      setEditingNoteId={setEditingNoteId}
+      formAction={({ address, noteInput }) => updateNote({ variables: { address, noteInput } })} />
   }
 
   return <NoteCard note={note} setEditingNoteId={setEditingNoteId} removeNote={removeNote} />
 }
 
-function NoteCard({ note: { id, address, title, content }, setEditingNoteId, removeNote }) {
-
+function NoteCard ({ note: { id, address, title, content }, setEditingNoteId, removeNote }) {
   return <div className='note-card'>
     <h3>{title}</h3>
     <div>{content}</div>
     <button onClick={() => setEditingNoteId(id)}>Edit</button>
-    <button onClick={() => removeNote({ variables: { address } })}>Remove</button>    
+    <button onClick={() => removeNote({ variables: { address } })}>Remove</button>
   </div>
 }
 
-function NoteForm({ note = { title: '', content: ''}, formTitle, formAction, setEditingNoteId = () => {} }) {
-
-  const [formState, setFormState] = useState(note)
+function NoteForm ({ note = { title: '', content: '' }, formTitle, formAction, setEditingNoteId = () => {} }) {
+  const [formState, setFormState] = useState(omit(['id', 'address', '__typename'], note))
   const { title, content } = formState
+  const { address } = note
 
   const setField = field => ({ target: { value } }) => setFormState(formState => ({
     ...formState,
@@ -72,10 +72,17 @@ function NoteForm({ note = { title: '', content: ''}, formTitle, formAction, set
 
   const onSubmit = () => {
     formAction({
-      ...formState,
-      createdAt: Date.now()
+      address,
+      noteInput: {
+        ...formState,
+        createdAt: Date.now().toString()
+      }
     })
     setEditingNoteId(null)
+    setFormState({
+      title: '',
+      content: ''
+    })
   }
 
   return <div className='note-form'>
@@ -96,4 +103,3 @@ function NoteForm({ note = { title: '', content: ''}, formTitle, formAction, set
 }
 
 export default NotesHApp
-
