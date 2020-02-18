@@ -1,6 +1,5 @@
 // data is a tree organized by instanceId > zome > function
 // leaves can either be an object, or a function which is called with the zome call args.
-// DON'T use this function to update the tree, just to construct return values.
 // See mockCallZome.js
 
 const noteEntries = {
@@ -34,13 +33,14 @@ const data = {
         return {
           id,
           address,
+          created_at: String(Date.now()),
           ...noteInput
         }
       },
 
       get_note: ({ address }) => {
         const noteEntry = noteEntries[address]
-        if (!noteEntry) throw new Error(`Can't find note with address`, address)
+        if (!noteEntry) throw new Error(`Can't find note with address ${address}`)
         return {
           address,
           ...noteEntry
@@ -62,10 +62,12 @@ const data = {
         return removedNote
       },
 
-      list_notes: () => Object.keys(noteEntries).map(key => ({
-        address: key,
-        ...noteEntries[key]
-      }))
+      list_notes: () => Object.keys(noteEntries)
+        .map(key => ({
+          address: key,
+          ...noteEntries[key]
+        }))
+        .sort((a, b) => a.created_at > b.created_at ? -1 : 1)
     }
   }
 }

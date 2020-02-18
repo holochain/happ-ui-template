@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { omit } from 'lodash/fp'
+import { pick } from 'lodash/fp'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import LIST_NOTES_QUERY from './graphql/listNotesQuery'
 import CREATE_NOTE_MUTATION from './graphql/createNoteMutation'
@@ -10,9 +10,10 @@ import './NotesHApp.css'
 
 function NotesHApp () {
   const { data: { listNotes } = { listNotes: [] } } = useQuery(LIST_NOTES_QUERY)
-  const [createNote] = useMutation(CREATE_NOTE_MUTATION)
+
+  const [createNote] = useMutation(CREATE_NOTE_MUTATION, { refetchQueries: [{ query: LIST_NOTES_QUERY }] })
   const [updateNote] = useMutation(UPDATE_NOTE_MUTATION)
-  const [removeNote] = useMutation(REMOVE_NOTE_MUTATION)
+  const [removeNote] = useMutation(REMOVE_NOTE_MUTATION, { refetchQueries: [{ query: LIST_NOTES_QUERY }] })
 
   // the id of the note currently being edited
   const [editingNoteId, setEditingNoteId] = useState()
@@ -54,14 +55,14 @@ function NoteRow ({ note, editingNoteId, setEditingNoteId, updateNote, removeNot
 function NoteCard ({ note: { id, address, title, content }, setEditingNoteId, removeNote }) {
   return <div className='note-card'>
     <h3>{title}</h3>
-    <div>{content}</div>
-    <button onClick={() => setEditingNoteId(id)}>Edit</button>
+    <div className='note-content'>{content}</div>
+    <button className='button' onClick={() => setEditingNoteId(id)}>Edit</button>
     <button onClick={() => removeNote({ variables: { address } })}>Remove</button>
   </div>
 }
 
 function NoteForm ({ note = { title: '', content: '' }, formTitle, formAction, setEditingNoteId = () => {} }) {
-  const [formState, setFormState] = useState(omit(['id', 'address', '__typename'], note))
+  const [formState, setFormState] = useState(pick(['title', 'content'], note))
   const { title, content } = formState
   const { address } = note
 
@@ -69,6 +70,13 @@ function NoteForm ({ note = { title: '', content: '' }, formTitle, formAction, s
     ...formState,
     [field]: value
   }))
+
+  const clearForm = () => {
+    setFormState({
+      title: '',
+      content: ''
+    })
+  }
 
   const onSubmit = () => {
     formAction({
@@ -79,25 +87,27 @@ function NoteForm ({ note = { title: '', content: '' }, formTitle, formAction, s
       }
     })
     setEditingNoteId(null)
-    setFormState({
-      title: '',
-      content: ''
-    })
+    clearForm()
+  }
+
+  const onCancel = () => {
+    setEditingNoteId(null)
+    clearForm()
   }
 
   return <div className='note-form'>
     <h3>{formTitle}</h3>
-    <div>
+    <div className='form-row'>
       <label htmlFor='title'>Title</label>
       <input id='title' name='title' value={title} onChange={setField('title')} />
     </div>
-    <div>
+    <div className='form-row'>
       <label htmlFor='content'>Content</label>
-      <textarea id='content' name='content' value={content} onChange={setField('content')} />
+      <textarea id='content' name='content' value={content} onChange={setField('content')} rows='6' />
     </div>
     <div>
       <button onClick={onSubmit}>Submit</button>
-      <button onClick={() => setEditingNoteId(null)}>Cancel</button>
+      <button onClick={onCancel}>Cancel</button>
     </div>
   </div>
 }
