@@ -1,5 +1,8 @@
 .notes-happ {
-  padding: 50px
+  display: flex;
+  padding: 50px;
+  align-items: center;
+  flex-direction: column;
 }
 
 .note-card {
