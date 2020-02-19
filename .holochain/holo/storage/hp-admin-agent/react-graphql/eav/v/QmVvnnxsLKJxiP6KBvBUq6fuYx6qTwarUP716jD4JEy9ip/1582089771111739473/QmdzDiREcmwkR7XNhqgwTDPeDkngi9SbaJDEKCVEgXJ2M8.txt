@@ -1,1 +1,0 @@
-{"entity":"QmX4jBWHYZ3u1g7ECesXujecpmtWoeCSE979NnVbxPWrmH","attribute":{"link_tag":["note_revisions",""]},"value":"QmVvnnxsLKJxiP6KBvBUq6fuYx6qTwarUP716jD4JEy9ip","index":1582089771111739473}

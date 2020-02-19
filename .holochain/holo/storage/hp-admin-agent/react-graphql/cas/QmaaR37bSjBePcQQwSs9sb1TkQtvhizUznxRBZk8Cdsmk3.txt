@@ -1,1 +1,0 @@
-{"entry_type":"Dna","entry_address":"QmQydLZW8k8bdCMjqdV8wzo5DcZwztQTDjyZRsBd75yG2C","provenances":[["HcScjkqc7F7A98nob966SAHbD7FFg67m7E8A3VxnGo3Vaptzrex936s7395hZwI","7z9EYjMuFEg9IJ3go8m9QVz85f9riN9iTzcmPLjSwONzx2S05+/Rc3KbAFAA+rOCDSnUdRdQmJ+2XMVbpgz7Cw=="]],"link":null,"link_same_type":null,"link_update_delete":null,"timestamp":"2020-02-19T05:22:15+00:00"}
