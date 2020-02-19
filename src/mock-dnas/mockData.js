@@ -1,26 +1,22 @@
 // data is a tree organized by instanceId > zome > function
 // leaves can either be an object, or a function which is called with the zome call args.
-// DON'T use this function to update the tree, just to construct return values.
 // See mockCallZome.js
 
 const noteEntries = {
   QmRccTDUM1UcJWuxW3aMjfYkSBFmhBnGtgB7lAddress01: {
-    id: '1',
     created_at: '1581553349996',
-    title: 'Note 1',
-    content: 'The body of note 1'
+    title: 'First note',
+    content: 'This is the earliest note created'
   },
   QmRccTDUM1UcJWuxW3aMjfYkSBFmhBnGtgB7lAddress02: {
-    id: '2',
     created_at: '1581553400796',
-    title: 'Note 2',
-    content: 'The body of note 2'
+    title: 'Middle note',
+    content: 'Created after First note but before Latest note'
   },
   QmRccTDUM1UcJWuxW3aMjfYkSBFmhBnGtgB7lAddress03: {
-    id: '3',
     created_at: '1581553434263',
-    title: 'Note 3',
-    content: 'The body of note 3'
+    title: 'Latest note',
+    content: 'The most recently created note'
   }
 }
 
@@ -28,44 +24,47 @@ const data = {
   notes: {
     notes: {
       create_note: ({ note_input: noteInput }) => {
-        const id = Object.keys(noteEntries).length + 1
-        const address = 'QmRccTDUM1UcJWuxW3aMjfYkSBFmhBnGtgB7lAddress0' + id
-        noteEntries[address] = { id, ...noteInput }
+        const noteIndex = Object.keys(noteEntries).length + 1
+        const id = 'QmRccTDUM1UcJWuxW3aMjfYkSBFmhBnGtgB7lAddress0' + noteIndex
+        const createdAt = String(Date.now())
+        noteEntries[id] = { id, ...noteInput, created_at: createdAt }
         return {
           id,
-          address,
+          created_at: createdAt,
           ...noteInput
         }
       },
 
-      get_note: ({ address }) => {
-        const noteEntry = noteEntries[address]
-        if (!noteEntry) throw new Error(`Can't find note with address`, address)
+      get_note: ({ id }) => {
+        const noteEntry = noteEntries[id]
+        if (!noteEntry) throw new Error(`Can't find note with id ${id}`)
         return {
-          address,
+          id,
           ...noteEntry
         }
       },
 
-      update_note: ({ address, note_input: noteInput }) => {
-        const noteOriginalResult = data.notes.notes.get_note({ address })
-        noteEntries[address] = { ...noteOriginalResult, ...noteInput }
+      update_note: ({ id, note_input: noteInput }) => {
+        const noteOriginalResult = data.notes.notes.get_note({ id })
+        noteEntries[id] = { ...noteOriginalResult, ...noteInput }
         return {
           ...noteOriginalResult,
           ...noteInput
         }
       },
 
-      remove_note: ({ address }) => {
-        const removedNote = data.notes.notes.get_note({ address })
-        delete noteEntries[address]
+      remove_note: ({ id }) => {
+        const removedNote = data.notes.notes.get_note({ id })
+        delete noteEntries[id]
         return removedNote
       },
 
-      list_notes: () => Object.keys(noteEntries).map(key => ({
-        address: key,
-        ...noteEntries[key]
-      }))
+      list_notes: () => Object.keys(noteEntries)
+        .map(key => ({
+          id: key,
+          ...noteEntries[key]
+        }))
+        .sort((a, b) => a.created_at > b.created_at ? -1 : 1)
     }
   }
 }

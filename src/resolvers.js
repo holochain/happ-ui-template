@@ -1,36 +1,33 @@
 import { createZomeCall } from './holochainClient'
-import { omitBy, isUndefined } from 'lodash/fp'
 
 function dnaToUiNote (noteResult) {
+  console.log('noteResult : ', noteResult)
   return {
     ...noteResult,
     createdAt: noteResult.created_at
   }
 }
 
-function uiToDnaNote (noteInput) {
-  return omitBy(isUndefined, {
-    ...noteInput,
-    created_at: noteInput.createdAt
-  })
-}
-
 export const resolvers = {
   Query: {
-    getNote: async (_, { address }) =>
-      dnaToUiNote(await createZomeCall('/notes/notes/get_note')({ address })),
+    getNote: async (_, { id }) =>
+      dnaToUiNote(await createZomeCall('/notes/notes/get_note')({ id })),
 
     listNotes: async () =>
       (await createZomeCall('/notes/notes/list_notes')()).map(dnaToUiNote)
   },
 
   Mutation: {
-    createNote: async (_, { noteInput }) => dnaToUiNote(await createZomeCall('/notes/notes/create_note')({ note_input: { ...uiToDnaNote(noteInput) } })),
+    createNote: async (_, { noteInput }) => dnaToUiNote(await createZomeCall('/notes/notes/create_note')({ note_input: noteInput })),
 
-    updateNote: async (_, { address, noteInput }) => dnaToUiNote(await createZomeCall('/notes/notes/update_note')({ address, note_input: { ...uiToDnaNote(noteInput) } })),
+    updateNote: async (_, { id, noteInput }) => {
+      console.log('noteInput : ', noteInput)
+      console.log('id : ', id)
+      dnaToUiNote(await createZomeCall('/notes/notes/update_note')({ id, note_input: noteInput }))
+    },
 
-    removeNote: async (_, { address }) =>
-      dnaToUiNote(await createZomeCall('/notes/notes/remove_note')({ address }))
+    removeNote: async (_, { id }) =>
+      dnaToUiNote(await createZomeCall('/notes/notes/remove_note')({ id }))
   }
 }
 
