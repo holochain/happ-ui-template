@@ -22,6 +22,8 @@
 
 .holochain
 dna-src/dna
+conductor-config.toml
+agent-1.key
 
 npm-debug.log*
 yarn-debug.log*
