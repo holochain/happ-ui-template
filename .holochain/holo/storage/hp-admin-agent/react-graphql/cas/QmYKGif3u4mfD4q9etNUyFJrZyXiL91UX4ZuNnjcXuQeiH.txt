@@ -1,0 +1,1 @@
+{"App":["holochain_anchors::anchor","{\"anchor_type\":\"holochain_anchors::root_anchor\",\"anchor_text\":null}"]}

@@ -1,0 +1,1 @@
+{"CapTokenGrant":{"id":"hc_public","assignees":null,"functions":{"notes":["create_note","get_note","update_note","remove_note","list_notes"]}}}

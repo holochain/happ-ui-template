@@ -1,0 +1,1 @@
+{"entry_type":"ChainHeader","entry_address":"QmWWdra78pY13HzkeGLCo3nPiCQt3nTN7DdjV66fhCqeQg","provenances":[["HcScjkqc7F7A98nob966SAHbD7FFg67m7E8A3VxnGo3Vaptzrex936s7395hZwI","9h8MKfOd0sAHAKWQ8cL5ic5F6TuPUckXGKaankabeVypM+raFQaZ67U5/N1d+Cxgth3gzwydc631ADDKspx2Ag=="]],"link":null,"link_same_type":null,"link_update_delete":null,"timestamp":"2020-02-19T05:22:37+00:00"}
